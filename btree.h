@@ -32,9 +32,17 @@ class BTree {
             root -> newNode;
           }
           if ( (root -> numberkeys) < degree - 1) {
-            if (root -> isleaf) root -> keys.push_back(data);
-            
+            if (root -> isleaf) root -> insertInNode(data);
           }
+          if ( (root -> numberkeys) == degree - 1)  {
+            Node<T> *newNode = new Node<T>(root -> size, false);
+            newNode -> child[0] = root; 
+            newNode -> splitChildNode(0, root); 
+            int temp = 0; 
+            if ( newNode -> keys[0] < data) temp++; 
+            newNode -> childs[temp] -> insertInNode(data); 
+            root = newNode; 
+          }  
         }
 
         bool remove(int k) {
@@ -47,7 +55,9 @@ class BTree {
 
         }
 
-        ~BTree();
+        ~BTree()  {
+
+        }
 };
 
 #endif

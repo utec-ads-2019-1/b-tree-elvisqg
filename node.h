@@ -58,7 +58,36 @@ class Node {
           }
           while (num >= 0 && keys[num] > data) num--;       
           if (childs[num+1] -> numkeys < size-1) childs [num+1] -> insertInNode(data);
+          splitChildNode(num+1, childs[num+1]);
+        }
 
+       void splitChildNode(unsigned int num, Node<T>* child) {
+          Node<T> *newNode = new Node<T>(child -> size, child -> isLeaf);
+          newNode -> numkeys = size - 1; 
+          for (unsigned int it = 0; it < size-1; it++) {
+              newNode -> keys[it] = child -> keys[it+size]; 
+          }    
+          if (!child -> isLeaf) { 
+            for (unsigned int it = 0; it < size; it++) {
+              newNode -> childs[it] = child -> childs[it+size]; 
+            }
+          } 
+          child -> numkeys = size - 1; 
+          for (int it = size; it >= num+1; it--) {
+              childs[it+1] = childs[it]; 
+          }     
+          childs[num+1] = newNode; 
+        
+          // A key of y will move to this node. Find the location of 
+          // new key and move all greater keys one space ahead 
+          for (int it = size-1; it >= num; it--) 
+              keys[it+1] = keys[it]; 
+        
+          // Copy the middle key of y to this node 
+          keys[num] = child -> keys[numkeys-1]; 
+        
+          // Increment count of keys in this node 
+          size++; 
         }
     friend class BTree; 
 };
